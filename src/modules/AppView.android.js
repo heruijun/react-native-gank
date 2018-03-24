@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {View, StyleSheet, StatusBar, ActivityIndicator, BackHandler} from 'react-native';
 import NavigatorViewContainer from './navigator/NavigatorViewContainer';
 import * as snapshotUtil from '../utils/snapshot';
+import * as configuration from '../utils/configuration';
 import * as SessionStateActions from '../modules/session/SessionState';
 import store from '../redux/store';
 import DeveloperMenu from '../components/DeveloperMenu';
@@ -33,6 +34,7 @@ class AppView extends Component {
   }
 
   componentWillMount() {
+    configuration.setConfiguration('API_ROOT', 'http://gank.io/api');
     BackHandler.addEventListener('hardwareBackPress', this.navigateBack);
   }
 
