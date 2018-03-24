@@ -1,21 +1,6 @@
 {
-  "name": "PepperoniAppTemplate",
-  "author": "Futurice",
-  "description": "React Native App Starter Kit for Android and iOS",
-  "license": "MIT",
-  "homepage": "http://getpepperoni.com",
-  "bugs": "https://github.com/futurice/pepperoni-app-kit/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/futurice/pepperoni-app-kit"
-  },
-  "keywords": [
-    "React Native",
-    "Starter Kit",
-    "Bitrise",
-    "Redux",
-    "Auth0"
-  ],
+  "name": "GankApp",
+  "author": "heruijun",
   "version": "1.0.0",
   "private": false,
   "scripts": {
