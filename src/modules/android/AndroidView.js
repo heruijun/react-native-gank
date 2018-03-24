@@ -14,15 +14,15 @@ const color = () => Math.floor(255 * Math.random());
  * Sample view to demonstrate StackNavigator
  * @TODO remove this module in a live application.
  */
-class ColorView extends Component {
-  static displayName = 'ColorView';
+class AndroidView extends Component {
+  static displayName = 'AndroidView';
 
   static navigationOptions = {
-    title: '前端',
+    title: 'Android',
     tabBarIcon: (props) => (
         <Icon name='color-lens' size={24} color={props.tintColor} />
       ),
-    // TODO: move this into global config?
+
     headerTintColor: 'white',
     headerStyle: {
       backgroundColor: '#39babd'
@@ -35,20 +35,16 @@ class ColorView extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      background: `rgba(${color()},${color()},${color()}, 1)`
-    };
   }
 
   open = () => {
-    this.props.navigate({routeName: 'InfiniteColorStack'});
+    this.props.navigate({routeName: 'AndroidStack'});
   };
 
   render() {
-    const buttonText = 'Open in Stack Navigator';
     return (
-      <View style={[styles.container, {backgroundColor: this.state.background}]}>
-        <Button color='#ee7f06' title={buttonText} onPress={this.open}/>
+      <View style={[styles.container]}>
+
       </View>
     );
   }
@@ -62,4 +58,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ColorView;
+export default AndroidView;
