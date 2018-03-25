@@ -13,10 +13,6 @@ import {RkCard} from 'react-native-ui-kitten';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as api from '../../utils/api';
 
-/**
- * Sample view to demonstrate StackNavigator
- * @TODO remove this module in a live application.
- */
 class AndroidView extends Component {
   static displayName = 'AndroidView';
 
@@ -69,7 +65,7 @@ class AndroidView extends Component {
           refreshing: false
         })
       }).catch(error => {
-        this.setState({ error, loading: false, refreshing: false })
+        this.setState({ error, loading: false })
       })
     }, 1500)
   }
