@@ -4,14 +4,14 @@ import {
   View,
   FlatList,
   Text,
+  RefreshControl,
   Image,
+  ActivityIndicator,
   StyleSheet
 } from 'react-native';
 import {RkCard} from 'react-native-ui-kitten';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import * as api from '../../utils/api';
-
-const color = () => Math.floor(255 * Math.random());
 
 /**
  * Sample view to demonstrate StackNavigator
@@ -23,7 +23,11 @@ class AndroidView extends Component {
   constructor(props){
     super(props)
     this.state = {
-      data: []
+      loading: false,
+      data: [],
+      page: 1,
+      error: null,
+      refreshing: false
     }
   }
 
@@ -47,14 +51,82 @@ class AndroidView extends Component {
     this.props.navigate({routeName: 'AndroidStack'});
   };
 
-  componentWillMount() {
-    api.get('/data/Android/10/1', true).then(result => {
-      if(!result.error) {
+  componentDidMount() {
+    this.makeRemoteRequest();
+  }
+
+  makeRemoteRequest() {
+    const { page } = this.state
+    const url = '/data/Android/10/' + page
+    this.setState({ loading: true })
+
+    setTimeout(() => {
+      api.get(url, true).then(result => {
         this.setState({
-          data: result.results
+          data: page === 1 ? result.results : [...this.state.data, ...result.results],
+          error: result.error || null,
+          loading: false,
+          refreshing: false
         })
+      }).catch(error => {
+        this.setState({ error, loading: false, refreshing: false })
+      })
+    }, 1500)
+  }
+
+  handleRefresh = () => {
+    this.setState(
+      {
+        page: 1,
+        refreshing: true
+      },
+      () => {
+        this.makeRemoteRequest()
       }
+    )
+  }
+
+  handleLoadMore = () => {
+    this.setState({
+      page: this.state.page + 1
+    }, () => {
+      this.makeRemoteRequest()
     })
+  }
+
+  renderFooter = () => {
+    if (!this.state.loading) return null;
+
+    return (
+      <View
+        style={{
+          paddingVertical: 20,
+          borderTopWidth: 1,
+          borderColor: "#CED0CE"
+        }}
+      >
+        <ActivityIndicator animating size="large" />
+      </View>
+    );
+  };
+
+  renderListItem = ({item}) => {
+    let itemView = <View />
+    if (item.images) {
+      itemView = <Image rkCardImg source={{uri:item.images[0]}}/>
+    }
+
+    return (
+      <RkCard rkType='shadowed' style={styles.card}>
+        <View rkCardHeader>
+          <Text>{item.desc == null ? '' : item.desc}</Text>
+        </View>
+        {itemView}
+        <View rkCardFooter>
+          <Text>作者：{item.who == null ? '未知' : item.who}</Text>
+        </View>
+      </RkCard>
+    )
   }
 
   render() {
@@ -63,21 +135,17 @@ class AndroidView extends Component {
         <FlatList
           data={this.state.data}
           keyExtractor={item => item._id}
-          renderItem={({item}) => (
-            <RkCard rkType='shadowed' style={styles.card}>
-              {/* {item.images ? (
-                <Image rkCardImg source={{uri:item.images[0] + '?imageView2/0/w/100'}}/>
-              ) : (
-                <Text>暂无图片</Text>
-              )} */}
-              <View rkCardHeader>
-                <Text>描述：{item.desc == null ? '无' : item.desc}</Text>
-              </View>
-              <View rkCardFooter>
-                <Text>作者：{item.who == null ? '未知' : item.who}</Text>
-              </View>
-            </RkCard>
-          )}
+          onEndReachedThreshold={100}
+          onEndReached={this.handleLoadMore}
+          ListFooterComponent={this.renderFooter}
+          refreshControl={
+            <RefreshControl
+              colors={['#FF0000', '#0000FF']}
+              refreshing={this.state.refreshing}
+              onRefresh={this.handleRefresh}
+            />
+          }
+          renderItem={this.renderListItem}
         />
       </View>
     );
